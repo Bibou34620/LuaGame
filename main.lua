@@ -10,6 +10,7 @@ require 'player1Animations'
 require 'player2Animations'
 ----------------------------------------------------------------------
 
+--Fonction de chargement des textures
 function love.load()
   imageLogo = love.graphics.newImage("images/menuLogo.png")
   play = love.graphics.newImage("images/play.png")
@@ -34,7 +35,9 @@ function love.load()
   musicGame = love.audio.newSource("musics/gameMusic.wav", "stream")
 end
 
+--Dessiner a l'écran les composants
 function love.draw()
+  --Dessiner les composants menu
   if scene.isOnMenu == true then
     love.audio.play(musicMenu)
     love.graphics.scale(1.4, 1.5)
@@ -45,10 +48,10 @@ function love.draw()
     love.graphics.draw(help, 220, 180)
   end
   
+  --Dessiner les composants de jeu
   if scene.isOnGame == true then    
     love.audio.play(musicGame)
     love.graphics.draw(gameBG)
-    
     player1Animations()
     player2Animations()
     love.graphics.draw(glove.texture, glove.x, glove.y)
@@ -56,11 +59,15 @@ function love.draw()
   end
 end
 
+--Fonction d'update
 function love.update(dt)
+  
+  --Quitter le jeu
   if love.keyboard.isDown("q") and scene.isOnMenu == true then
     love.event.quit()
   end
   
+  --Jouer
   if love.keyboard.isDown("p") then
     scene.isOnGame = true
     scene.isOnMenu = false
@@ -68,13 +75,21 @@ function love.update(dt)
     love.audio.stop(musicMenu)
   end
   
+  --Fonctions
+  
+  --Retourner au menu
   returnToMenu()
+  --Pour que player1 se déplace
   player1Movement()
+  --Pour que player2 se déplace
   player2Movement()
+  --Collision entre 2 joueurs [DEBUG]
   collisionIn2Players(player1.x, player1.y, player2.x, player2.y)
+  --Si le joueur 2 est frappé [EXPERIMENTAL]
   checkIfFrapped()
 end
 
+--Fonction pour retourner au menu
 function returnToMenu()
   if scene.isOnGame == true and love.keyboard.isDown("escape") then
     scene.isOnGame = false
@@ -84,6 +99,7 @@ function returnToMenu()
   end
 end
 
+--Fonction si le player1 sort de la scène [A REMETTRE DANS UPDATE]
 function checkIfPlayer1ExitScene()
   if player1.x > 800 then
     player1.x = -105
@@ -102,6 +118,7 @@ function checkIfPlayer1ExitScene()
   end
 end
 
+--Idem mais pour player2
 function checkIfPlayer2ExitScene()
   if player2.x > 800 then
     player2.x = -105
@@ -120,6 +137,7 @@ function checkIfPlayer2ExitScene()
   end
 end
 
+--Si espace est appuyé alors attaquer [PLAYER 1 [EN CREER UNE POUR PLAYER 2]]
 function love.keypressed(key, scancode, isRepeat)
   if key == "space" then
     bullet.isShooted = true
@@ -127,6 +145,7 @@ function love.keypressed(key, scancode, isRepeat)
   end
 end
 
+--Fonction de DEBUG pour la collision entre 2 joueurs
 function collisionIn2Players(x1, y1, x2, y2)
   if math.abs(x1 - x2) < 64 and math.abs(y1 - y2) < 64 then
     print("Collision !")
@@ -134,6 +153,7 @@ function collisionIn2Players(x1, y1, x2, y2)
   end
 end
 
+--Changer bullet par glove
 function bulletCollisionWithPlayer2(x1, y1, x2, y2)
   if math.abs(x1 - x2) < 50 and math.abs(y1 - y2) < 50 then
     return true
@@ -142,6 +162,7 @@ function bulletCollisionWithPlayer2(x1, y1, x2, y2)
   end
 end
 
+--Checker si le player1 attaque player2
 function checkIfFrapped()
   if bulletCollisionWithPlayer2(player1.x, player1.y, player2.x, player2.y) == true and glove.attack == true then
     print("Joueur attaqué !")
@@ -166,6 +187,7 @@ function checkIfFrapped()
   end
 end
 
+--Mouvement joueur 1 [A REMETTRE DANS FICHIER ATTRIBUÉ]
 function player1Movement()
   if love.keyboard.isDown("q") and scene.isOnGame == true then
     player1.x = player1.x - player1.speed
@@ -206,6 +228,7 @@ function player1Movement()
   end
 end
 
+--Idem mais pour player2 [IDEM]
 function player2Movement()
     if love.keyboard.isDown("left") and scene.isOnGame == true then
     player2.x = player2.x - player2.speed
@@ -246,7 +269,7 @@ function player2Movement()
   end
 end
 
---Tirer la balle
+--Attaquer
 function love.keypressed(key, scancode, isRepeat)
   isRepeat = false
   if key == "space" then
