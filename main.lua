@@ -29,10 +29,15 @@ function love.load()
   player2.left = love.graphics.newImage("images/player2/player_left.png")
   
   glove.texture = love.graphics.newImage("images/bullet.png")
+  down_barrier = love.graphics.newImage("images/barrier.png")
+  up_barrier = love.graphics.newImage("images/barrier.png")
   
   --Audio
   musicMenu = love.audio.newSource("musics/menuMusic.wav", "stream")
   musicGame = love.audio.newSource("musics/gameMusic.wav", "stream")
+  
+  howToPlayFont = love.graphics.newFont("fonts/Monocraft.otf")
+  howToPlayLogo = love.graphics.newImage("images/ImageMenu.png")
 end
 
 --Dessiner a l'écran les composants
@@ -52,10 +57,23 @@ function love.draw()
   if scene.isOnGame == true then    
     love.audio.play(musicGame)
     love.graphics.draw(gameBG)
+    love.graphics.draw(down_barrier, 0, 560)
+    love.graphics.draw(up_barrier, 0, -20)
     player1Animations()
     player2Animations()
     love.graphics.draw(glove.texture, glove.x, glove.y)
     
+  end
+  
+  if scene.isOnHowToPlay == true then
+    love.graphics.scale(0.9)
+    love.graphics.draw(howToPlayLogo, 370)
+    love.graphics.setFont(howToPlayFont)
+    love.graphics.scale(2)
+    love.graphics.print("PushIT !", 190, 80)
+    
+    love.graphics.scale(0.69)
+    love.graphics.print("Joueur 1:", 80, 170)
   end
 end
 
@@ -72,6 +90,16 @@ function love.update(dt)
     scene.isOnGame = true
     scene.isOnMenu = false
     scene.isOnEndGame = false
+    scene.isOnHowToPlay = false
+    love.audio.stop(musicMenu)
+  end
+  
+  --Comment jouer
+  if love.keyboard.isDown("h") then
+    scene.isOnGame = false
+    scene.isOnMenu = false
+    scene.isOnEndGame = false
+    scene.isOnHowToPlay = true
     love.audio.stop(musicMenu)
   end
   

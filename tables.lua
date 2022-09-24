@@ -20,7 +20,7 @@ player1.speed = 5
 
 --Variables player2
 player2.x = 645
-player2.y = 10
+player2.y = 60
 player2.left = nil
 player2.right = nil
 player2.back = nil
@@ -35,6 +35,7 @@ player2.speed = 5
 scene.isOnMenu = true
 scene.isOnGame = false
 scene.isOnEndGame = false
+scene.isOnHowToPlay = false
 
 --Variables bullet
 glove.texture = nil
