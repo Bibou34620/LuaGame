@@ -2,7 +2,7 @@
 player1 = {}
 player2 = {}
 scene = {}
-bullet = {}
+glove = {}
 
 --Variables player1
 player1.x = 5
@@ -37,9 +37,9 @@ scene.isOnGame = false
 scene.isOnEndGame = false
 
 --Variables bullet
-bullet.texture = nil
-bullet.x = player1.x
-bullet.y = player1.y
-bullet.isShooted = false
-bullet.speed = 0.5
+glove.texture = nil
+glove.x = player1.x
+glove.y = player1.y
+glove.attack = false
+glove.speed = 0.5
 

@@ -27,7 +27,7 @@ function love.load()
   player2.right = love.graphics.newImage("images/player2/player_right.png")
   player2.left = love.graphics.newImage("images/player2/player_left.png")
   
-  bullet.texture = love.graphics.newImage("images/bullet.png")
+  glove.texture = love.graphics.newImage("images/bullet.png")
   
   --Audio
   musicMenu = love.audio.newSource("musics/menuMusic.wav", "stream")
@@ -51,7 +51,7 @@ function love.draw()
     
     player1Animations()
     player2Animations()
-    love.graphics.draw(bullet.texture, bullet.x, bullet.y)
+    love.graphics.draw(glove.texture, glove.x, glove.y)
     
   end
 end
@@ -68,16 +68,11 @@ function love.update(dt)
     love.audio.stop(musicMenu)
   end
   
-  if bullet.isShooted == false then
-    bullet.x = player1.x
-    bullet.y = player1.y
-  end
-  
   returnToMenu()
   player1Movement()
   player2Movement()
   collisionIn2Players(player1.x, player1.y, player2.x, player2.y)
-  bulletCollisionWithPlayer2(bullet.x, bullet.y, player2.x, player2.y)
+  checkIfFrapped()
 end
 
 function returnToMenu()
@@ -135,12 +130,39 @@ end
 function collisionIn2Players(x1, y1, x2, y2)
   if math.abs(x1 - x2) < 64 and math.abs(y1 - y2) < 64 then
     print("Collision !")
+    
   end
 end
 
 function bulletCollisionWithPlayer2(x1, y1, x2, y2)
   if math.abs(x1 - x2) < 50 and math.abs(y1 - y2) < 50 then
-    print("La balle à touché joueur 2 !")
+    return true
+  else
+    return false
+  end
+end
+
+function checkIfFrapped()
+  if bulletCollisionWithPlayer2(player1.x, player1.y, player2.x, player2.y) == true and glove.attack == true then
+    print("Joueur attaqué !")
+    
+    if player1.isOnLeft == true then
+      player2.x = player2.x - 6 
+    end
+    
+    if player1.isOnRight == true then
+      player2.x = player2.x + 6 
+    end
+    
+    if player1.isOnBack == true then
+      player2.y = player2.y - 6 
+    end
+    
+    if player1.isOnFwd == true then
+      player2.y = player2.y + 6 
+    end
+    
+    
   end
 end
 
@@ -226,8 +248,12 @@ end
 
 --Tirer la balle
 function love.keypressed(key, scancode, isRepeat)
+  isRepeat = false
   if key == "space" then
-    bullet.isShooted = true
+    glove.attack = true
+    
+  else 
+    glove.attack = false
   end
 end
   
