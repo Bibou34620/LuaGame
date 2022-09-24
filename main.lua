@@ -68,17 +68,16 @@ function love.update(dt)
     love.audio.stop(musicMenu)
   end
   
-  returnToMenu()
-  player1Movement()
-  player2Movement()
-  checkIfPlayer1ExitScene()
-  
   if bullet.isShooted == false then
     bullet.x = player1.x
     bullet.y = player1.y
   end
   
-  
+  returnToMenu()
+  player1Movement()
+  player2Movement()
+  collisionIn2Players(player1.x, player1.y, player2.x, player2.y)
+  bulletCollisionWithPlayer2(bullet.x, bullet.y, player2.x, player2.y)
 end
 
 function returnToMenu()
@@ -126,15 +125,110 @@ function checkIfPlayer2ExitScene()
   end
 end
 
-function love.keypressed(key , scancode, isRepeat)
+function love.keypressed(key, scancode, isRepeat)
   if key == "space" then
     bullet.isShooted = true
     bullet.x = bullet.x + 40
-    
   end
 end
 
-co = coroutine.create(function()
-  wait(3)
-  print("Bonjour le monde !")
-end)
+function collisionIn2Players(x1, y1, x2, y2)
+  if math.abs(x1 - x2) < 64 and math.abs(y1 - y2) < 64 then
+    print("Collision !")
+  end
+end
+
+function bulletCollisionWithPlayer2(x1, y1, x2, y2)
+  if math.abs(x1 - x2) < 50 and math.abs(y1 - y2) < 50 then
+    print("La balle à touché joueur 2 !")
+  end
+end
+
+function player1Movement()
+  if love.keyboard.isDown("q") and scene.isOnGame == true then
+    player1.x = player1.x - player1.speed
+    player1.isOnRight = false
+    player1.isOnLeft = true
+    player1.isOnFwd = false
+    player1.isOnBack = false    
+  end
+  
+  if love.keyboard.isDown("d") and scene.isOnGame == true then
+    player1.x = player1.x + player1.speed
+    player1.isOnRight = true
+    player1.isOnLeft = false
+    player1.isOnFwd = false
+    player1.isOnBack = false
+  end
+  
+  if love.keyboard.isDown("s") and scene.isOnGame == true then
+    player1.y = player1.y + player1.speed
+    player1.isOnRight = false
+    player1.isOnLeft = false
+    player1.isOnFwd = true
+    player1.isOnBack = false
+  end
+  
+  if love.keyboard.isDown("z") and scene.isOnGame == true then
+    player1.y = player1.y - player1.speed
+    player1.isOnRight = false
+    player1.isOnLeft = false
+    player1.isOnFwd = false
+    player1.isOnBack = true
+  end
+  
+  if love.keyboard.isDown("lshift") then
+    player1.speed = 2
+  else
+    player1.speed = 5
+  end
+end
+
+function player2Movement()
+    if love.keyboard.isDown("left") and scene.isOnGame == true then
+    player2.x = player2.x - player2.speed
+    player2.isOnRight = false
+    player2.isOnLeft = true
+    player2.isOnFwd = false
+    player2.isOnBack = false    
+  end
+  
+  if love.keyboard.isDown("right") and scene.isOnGame == true then
+    player2.x = player2.x + player2.speed
+    player2.isOnRight = true
+    player2.isOnLeft = false
+    player2.isOnFwd = false
+    player2.isOnBack = false
+  end
+  
+  if love.keyboard.isDown("down") and scene.isOnGame == true then
+    player2.y = player2.y + player2.speed
+    player2.isOnRight = false
+    player2.isOnLeft = false
+    player2.isOnFwd = true
+    player2.isOnBack = false
+  end
+  
+  if love.keyboard.isDown("up") and scene.isOnGame == true then
+    player2.y = player2.y - player2.speed
+    player2.isOnRight = false
+    player2.isOnLeft = false
+    player2.isOnFwd = false
+    player2.isOnBack = true
+  end
+  
+  if love.keyboard.isDown("*") then
+    player2.speed = 2
+  else
+    player2.speed = 5
+  end
+end
+
+--Tirer la balle
+function love.keypressed(key, scancode, isRepeat)
+  if key == "space" then
+    bullet.isShooted = true
+  end
+end
+  
+  

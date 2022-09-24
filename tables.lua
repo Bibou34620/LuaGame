@@ -20,7 +20,7 @@ player1.speed = 5
 
 --Variables player2
 player2.x = 645
-player2.y = -35
+player2.y = 10
 player2.left = nil
 player2.right = nil
 player2.back = nil
@@ -41,4 +41,5 @@ bullet.texture = nil
 bullet.x = player1.x
 bullet.y = player1.y
 bullet.isShooted = false
+bullet.speed = 0.5
 
