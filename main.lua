@@ -73,7 +73,24 @@ function love.draw()
     love.graphics.print("PushIT !", 190, 80)
     
     love.graphics.scale(0.69)
-    love.graphics.print("Joueur 1:", 80, 170)
+    love.graphics.print("Joueur 1:", 60, 170)
+    love.graphics.print("* Z: Aller devant", 20, 200)
+    love.graphics.print("* Q: Aller à gauche", 20, 230)
+    love.graphics.print("* S: Aller en arrière", 20, 260)
+    love.graphics.print("* D: Aller à droite", 20, 290)
+    love.graphics.print("* Espace: Attraper le joueur 2", 20, 320)
+    love.graphics.print("* Espace + <Direction> pousser le J2", 20, 350)
+    
+    love.graphics.print("Joueur 2:", 370, 170)
+    love.graphics.print("* Haut: Aller devant", 360, 200)
+    love.graphics.print("* Gauche: Aller à gauche", 360, 230)
+    love.graphics.print("* Bas: Aller en arrière", 360, 260)
+    love.graphics.print("* Droite: Aller à droite", 360, 290)
+    love.graphics.print("* Ctrl: Attraper le joueur 2", 360, 320)
+    love.graphics.print("* Ctrl + <Direction> pousser le J1", 360, 350)
+    
+
+
   end
 end
 
