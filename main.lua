@@ -28,13 +28,14 @@ function love.load()
   player2.right = love.graphics.newImage("images/player2/player_right.png")
   player2.left = love.graphics.newImage("images/player2/player_left.png")
   
-  glove.texture = love.graphics.newImage("images/bullet.png")
+  glove1.texture = love.graphics.newImage("images/bullet.png")
   down_barrier = love.graphics.newImage("images/barrier.png")
   up_barrier = love.graphics.newImage("images/barrier.png")
   
   --Audio
   musicMenu = love.audio.newSource("musics/menuMusic.wav", "stream")
   musicGame = love.audio.newSource("musics/gameMusic.wav", "stream")
+  musicHowToPlay = love.audio.newSource("musics/howToPlayMusic.wav", "stream")
   
   howToPlayFont = love.graphics.newFont("fonts/Monocraft.otf")
   howToPlayLogo = love.graphics.newImage("images/ImageMenu.png")
@@ -61,11 +62,12 @@ function love.draw()
     love.graphics.draw(up_barrier, 0, -20)
     player1Animations()
     player2Animations()
-    love.graphics.draw(glove.texture, glove.x, glove.y)
+    love.graphics.draw(glove1.texture, glove1.x, glove1.y)
     
   end
   
   if scene.isOnHowToPlay == true then
+    love.audio.play(musicHowToPlay)
     love.graphics.scale(0.9)
     love.graphics.draw(howToPlayLogo, 370)
     love.graphics.setFont(howToPlayFont)
@@ -89,7 +91,16 @@ function love.draw()
     love.graphics.print("* Ctrl: Attraper le joueur 2", 360, 320)
     love.graphics.print("* Ctrl + <Direction> pousser le J1", 360, 350)
     
+    love.graphics.print("Si vous voulez plus d'informations cliquez sur C", 140,430)
+    
+    love.graphics.scale(0.9)
+    love.graphics.print("Echap pour retourner au menu", 30)
 
+    if love.keyboard.isDown("escape") then
+      scene.isOnHowToPlay = false
+      scene.isOnMenu = true
+      love.audio.stop(musicHowToPlay)
+    end
 
   end
 end
@@ -128,10 +139,10 @@ function love.update(dt)
   player1Movement()
   --Pour que player2 se déplace
   player2Movement()
-  --Collision entre 2 joueurs [DEBUG]
-  collisionIn2Players(player1.x, player1.y, player2.x, player2.y)
   --Si le joueur 2 est frappé [EXPERIMENTAL]
-  checkIfFrapped()
+  checkIfPlayer2Frapped()
+  
+  checkIfPlayer1Frapped()
 end
 
 --Fonction pour retourner au menu
@@ -144,62 +155,17 @@ function returnToMenu()
   end
 end
 
---Fonction si le player1 sort de la scène [A REMETTRE DANS UPDATE]
-function checkIfPlayer1ExitScene()
-  if player1.x > 800 then
-    player1.x = -105
-  end
-  
-  if player1.x < -105 then
-    player1.x = 800
-  end
-  
-  if player1.y > 600 then
-    player1.y = -150
-  end
-  
-  if player1.y < -150 then
-    player1.y = 600
+--Si le joueur 1 collisionne avec joueur 2
+function gloveCollisionWithPlayer2(x1, y1, x2, y2)
+  if math.abs(x1 - x2) < 50 and math.abs(y1 - y2) < 50 then
+    return true
+  else
+    return false
   end
 end
 
---Idem mais pour player2
-function checkIfPlayer2ExitScene()
-  if player2.x > 800 then
-    player2.x = -105
-  end
-  
-  if player2.x < -105 then
-    player2.x = 800
-  end
-  
-  if player2.y > 600 then
-    player2.y = -150
-  end
-  
-  if player2.y < -150 then
-    player2.y = 600
-  end
-end
-
---Si espace est appuyé alors attaquer [PLAYER 1 [EN CREER UNE POUR PLAYER 2]]
-function love.keypressed(key, scancode, isRepeat)
-  if key == "space" then
-    bullet.isShooted = true
-    bullet.x = bullet.x + 40
-  end
-end
-
---Fonction de DEBUG pour la collision entre 2 joueurs
-function collisionIn2Players(x1, y1, x2, y2)
-  if math.abs(x1 - x2) < 64 and math.abs(y1 - y2) < 64 then
-    print("Collision !")
-    
-  end
-end
-
---Changer bullet par glove
-function bulletCollisionWithPlayer2(x1, y1, x2, y2)
+--Idem mais pour le joueur 1
+function gloveCollisionWithPlayer1(x1, y1, x2, y2)
   if math.abs(x1 - x2) < 50 and math.abs(y1 - y2) < 50 then
     return true
   else
@@ -208,8 +174,8 @@ function bulletCollisionWithPlayer2(x1, y1, x2, y2)
 end
 
 --Checker si le player1 attaque player2
-function checkIfFrapped()
-  if bulletCollisionWithPlayer2(player1.x, player1.y, player2.x, player2.y) == true and glove.attack == true then
+function checkIfPlayer2Frapped()
+  if gloveCollisionWithPlayer2(player1.x, player1.y, player2.x, player2.y) == true and glove1.attack == true then
     print("Joueur attaqué !")
     
     if player1.isOnLeft == true then
@@ -232,97 +198,53 @@ function checkIfFrapped()
   end
 end
 
---Mouvement joueur 1 [A REMETTRE DANS FICHIER ATTRIBUÉ]
-function player1Movement()
-  if love.keyboard.isDown("q") and scene.isOnGame == true then
-    player1.x = player1.x - player1.speed
-    player1.isOnRight = false
-    player1.isOnLeft = true
-    player1.isOnFwd = false
-    player1.isOnBack = false    
-  end
-  
-  if love.keyboard.isDown("d") and scene.isOnGame == true then
-    player1.x = player1.x + player1.speed
-    player1.isOnRight = true
-    player1.isOnLeft = false
-    player1.isOnFwd = false
-    player1.isOnBack = false
-  end
-  
-  if love.keyboard.isDown("s") and scene.isOnGame == true then
-    player1.y = player1.y + player1.speed
-    player1.isOnRight = false
-    player1.isOnLeft = false
-    player1.isOnFwd = true
-    player1.isOnBack = false
-  end
-  
-  if love.keyboard.isDown("z") and scene.isOnGame == true then
-    player1.y = player1.y - player1.speed
-    player1.isOnRight = false
-    player1.isOnLeft = false
-    player1.isOnFwd = false
-    player1.isOnBack = true
-  end
-  
-  if love.keyboard.isDown("lshift") then
-    player1.speed = 2
-  else
-    player1.speed = 5
+
+--Checker si le player2 attaque le player1
+function checkIfPlayer1Frapped()
+  if gloveCollisionWithPlayer1(player2.x, player2.y, player1.x, player1.y) == true and glove2.attack == true then
+    print("Joueur attaqué !")
+    
+    if player2.isOnLeft == true then
+      player1.x = player1.x - 6 
+    end
+    
+    if player2.isOnRight == true then
+      player1.x = player1.x + 6 
+    end
+    
+    if player2.isOnBack == true then
+      player1.y = player1.y - 6 
+    end
+    
+    if player2.isOnFwd == true then
+      player1.y = player1.y + 6 
+    end
+    
+    
   end
 end
 
---Idem mais pour player2 [IDEM]
-function player2Movement()
-    if love.keyboard.isDown("left") and scene.isOnGame == true then
-    player2.x = player2.x - player2.speed
-    player2.isOnRight = false
-    player2.isOnLeft = true
-    player2.isOnFwd = false
-    player2.isOnBack = false    
-  end
-  
-  if love.keyboard.isDown("right") and scene.isOnGame == true then
-    player2.x = player2.x + player2.speed
-    player2.isOnRight = true
-    player2.isOnLeft = false
-    player2.isOnFwd = false
-    player2.isOnBack = false
-  end
-  
-  if love.keyboard.isDown("down") and scene.isOnGame == true then
-    player2.y = player2.y + player2.speed
-    player2.isOnRight = false
-    player2.isOnLeft = false
-    player2.isOnFwd = true
-    player2.isOnBack = false
-  end
-  
-  if love.keyboard.isDown("up") and scene.isOnGame == true then
-    player2.y = player2.y - player2.speed
-    player2.isOnRight = false
-    player2.isOnLeft = false
-    player2.isOnFwd = false
-    player2.isOnBack = true
-  end
-  
-  if love.keyboard.isDown("*") then
-    player2.speed = 2
-  else
-    player2.speed = 5
-  end
-end
-
---Attaquer
 function love.keypressed(key, scancode, isRepeat)
+  --Attaquer
   isRepeat = false
   if key == "space" then
-    glove.attack = true
+    glove1.attack = true
     
   else 
-    glove.attack = false
+    glove1.attack = false
+  end
+  
+  if key == "rshift" then
+    glove2.attack = true
+    
+  else
+    glove2.attack = false
+  end
+  
+  --Ouvrir documentation
+  if key == "c" and scene.isOnHowToPlay == true then
+    love.system.openURL("https:/github.com/bibou34620/LuaGame")
+    scene.isOnMenu = true
+    scene.isOnHowToPlay = false
   end
 end
-  
-  
