@@ -1,5 +1,5 @@
 function player1Movement()
-  if love.keyboard.isDown("q") and scene.isOnGame == true then
+  if love.keyboard.isDown("q") and scene.isOnGame == true and player1.isAlive == true then
     player1.x = player1.x - player1.speed
     player1.isOnRight = false
     player1.isOnLeft = true
@@ -7,7 +7,7 @@ function player1Movement()
     player1.isOnBack = false    
   end
   
-  if love.keyboard.isDown("d") and scene.isOnGame == true then
+  if love.keyboard.isDown("d") and scene.isOnGame == true and player1.isAlive == true  then
     player1.x = player1.x + player1.speed
     player1.isOnRight = true
     player1.isOnLeft = false
@@ -15,7 +15,7 @@ function player1Movement()
     player1.isOnBack = false
   end
   
-  if love.keyboard.isDown("s") and scene.isOnGame == true then
+  if love.keyboard.isDown("s") and scene.isOnGame == true and player1.isAlive == true  then
     player1.y = player1.y + player1.speed
     player1.isOnRight = false
     player1.isOnLeft = false
@@ -23,7 +23,7 @@ function player1Movement()
     player1.isOnBack = false
   end
   
-  if love.keyboard.isDown("z") and scene.isOnGame == true then
+  if love.keyboard.isDown("z") and scene.isOnGame == true and player1.isAlive == true  then
     player1.y = player1.y - player1.speed
     player1.isOnRight = false
     player1.isOnLeft = false
@@ -36,4 +36,6 @@ function player1Movement()
   else
     player1.speed = 5
   end
+  
+  print(player1.x .. "   " .. player1.y)
 end

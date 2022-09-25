@@ -17,6 +17,7 @@ player1.isOnLeft = false
 player1.isOnFwd = true
 player1.isOnBack = false
 player1.speed = 5
+player1.isAlive = true
 
 
 --Variables player2

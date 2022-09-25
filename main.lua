@@ -28,7 +28,6 @@ function love.load()
   player2.right = love.graphics.newImage("images/player2/player_right.png")
   player2.left = love.graphics.newImage("images/player2/player_left.png")
   
-  glove1.texture = love.graphics.newImage("images/bullet.png")
   down_barrier = love.graphics.newImage("images/barrier.png")
   up_barrier = love.graphics.newImage("images/barrier.png")
   
@@ -62,8 +61,6 @@ function love.draw()
     love.graphics.draw(up_barrier, 0, -20)
     player1Animations()
     player2Animations()
-    love.graphics.draw(glove1.texture, glove1.x, glove1.y)
-    
   end
   
   if scene.isOnHowToPlay == true then
@@ -143,6 +140,8 @@ function love.update(dt)
   checkIfPlayer2Frapped()
   
   checkIfPlayer1Frapped()
+  
+  ifPlayer1CollidesWithBarrier(player1.x, 0, player1.y, 560)
 end
 
 --Fonction pour retourner au menu
@@ -179,22 +178,28 @@ function checkIfPlayer2Frapped()
     print("Joueur attaqué !")
     
     if player1.isOnLeft == true then
-      player2.x = player2.x - 6 
+      player2.x = player2.x - 6
+      player2.speed = 1
     end
     
     if player1.isOnRight == true then
       player2.x = player2.x + 6 
+      player2.speed = 1
     end
     
     if player1.isOnBack == true then
-      player2.y = player2.y - 6 
+      player2.y = player2.y - 6
+      player2.speed = 1
     end
     
     if player1.isOnFwd == true then
-      player2.y = player2.y + 6 
+      player2.y = player2.y + 6
+      player2.speed = 1
     end
     
     
+  else
+    player2.speed = 5
   end
 end
 
@@ -206,21 +211,28 @@ function checkIfPlayer1Frapped()
     
     if player2.isOnLeft == true then
       player1.x = player1.x - 6 
+      player1.speed = 1
     end
     
     if player2.isOnRight == true then
-      player1.x = player1.x + 6 
+      player1.x = player1.x + 6
+      player1.speed = 1
     end
     
     if player2.isOnBack == true then
-      player1.y = player1.y - 6 
+      player1.y = player1.y - 6
+      player1.speed = 1
     end
     
     if player2.isOnFwd == true then
-      player1.y = player1.y + 6 
+      player1.y = player1.y + 6
+      player1.speed = 1
     end
     
     
+  
+  else
+    player1.speed = 5
   end
 end
 
@@ -246,5 +258,11 @@ function love.keypressed(key, scancode, isRepeat)
     love.system.openURL("https:/github.com/bibou34620/LuaGame")
     scene.isOnMenu = true
     scene.isOnHowToPlay = false
+  end
+end
+
+function ifPlayer1CollidesWithBarrier(px, bx, py, by)
+  if math.abs(px - bx) < 800 and math.abs(py - by) < 60 then
+    player1.isAlive = false
   end
 end
