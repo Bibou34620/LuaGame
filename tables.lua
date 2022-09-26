@@ -6,8 +6,8 @@ glove1 = {}
 glove2 = {}
 
 --Variables player1
-player1.x = 5
-player1.y = 370
+player1.x = 80
+player1.y = 245
 player1.left = nil
 player1.right = nil
 player1.back = nil
@@ -21,8 +21,8 @@ player1.isAlive = true
 
 
 --Variables player2
-player2.x = 645
-player2.y = 60
+player2.x = 675
+player2.y = 245
 player2.left = nil
 player2.right = nil
 player2.back = nil
@@ -32,6 +32,7 @@ player2.isOnLeft = false
 player2.isOnFwd = true
 player2.isOnBack = false
 player2.speed = 5
+player2.isAlive = true
 
 --Variables scene
 scene.isOnMenu = true

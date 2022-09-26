@@ -8,6 +8,7 @@ require 'player1_movement'
 require 'player2_movement'
 require 'player1Animations'
 require 'player2Animations'
+require 'collisonWithBarrier'
 ----------------------------------------------------------------------
 
 --Fonction de chargement des textures
@@ -30,6 +31,8 @@ function love.load()
   
   down_barrier = love.graphics.newImage("images/barrier.png")
   up_barrier = love.graphics.newImage("images/barrier.png")
+  left_barrier = love.graphics.newImage("images/barrier_rotate.png")
+  right_barrier = love.graphics.newImage("images/barrier_rotate.png")
   
   --Audio
   musicMenu = love.audio.newSource("musics/menuMusic.wav", "stream")
@@ -38,6 +41,8 @@ function love.load()
   
   howToPlayFont = love.graphics.newFont("fonts/Monocraft.otf")
   howToPlayLogo = love.graphics.newImage("images/ImageMenu.png")
+  
+  logoArena = love.graphics.newImage("images/Arenaimage.png")
 end
 
 --Dessiner a l'écran les composants
@@ -57,8 +62,11 @@ function love.draw()
   if scene.isOnGame == true then    
     love.audio.play(musicGame)
     love.graphics.draw(gameBG)
+    love.graphics.draw(logoArena, 330, 210)
     love.graphics.draw(down_barrier, 0, 560)
     love.graphics.draw(up_barrier, 0, -20)
+    love.graphics.draw(left_barrier, -20, 0)
+    love.graphics.draw(right_barrier, 760, 0)
     player1Animations()
     player2Animations()
   end
@@ -89,6 +97,9 @@ function love.draw()
     love.graphics.print("* Ctrl + <Direction> pousser le J1", 360, 350)
     
     love.graphics.print("Si vous voulez plus d'informations cliquez sur C", 140,430)
+    
+    love.graphics.scale(0.8)
+    love.graphics.print("© 2022 Mathias Rubert alias Bibou34620", 250,590)
     
     love.graphics.scale(0.9)
     love.graphics.print("Echap pour retourner au menu", 30)
@@ -141,7 +152,17 @@ function love.update(dt)
   
   checkIfPlayer1Frapped()
   
-  ifPlayer1CollidesWithBarrier(player1.x, 0, player1.y, 560)
+  ifPlayer1CollidesWithDownBarrier(player1.x, 0, player1.y, 560)
+  ifPlayer2CollidesWithDownBarrier(player2.x, 0, player2.y, 560)
+  
+  ifPlayer1CollidesWithUpBarrier(player1.x, 0, player1.y, -20)
+  ifPlayer2CollidesWithUpBarrier(player2.x, 0, player2.y, -20)
+  
+  ifPlayer1CollidesWithLeftBarrier(player1.x, -20, player1.y, 10)
+  ifPlayer2CollidesWithLeftBarrier(player2.x, -20, player2.y, 10)
+  
+  ifPlayer1CollidesWithRightBarrier(player1.x, 760, player1.y, 0)
+  ifPlayer2CollidesWithRightBarrier(player2.x, 760, player2.y, 0)
 end
 
 --Fonction pour retourner au menu
@@ -258,11 +279,5 @@ function love.keypressed(key, scancode, isRepeat)
     love.system.openURL("https:/github.com/bibou34620/LuaGame")
     scene.isOnMenu = true
     scene.isOnHowToPlay = false
-  end
-end
-
-function ifPlayer1CollidesWithBarrier(px, bx, py, by)
-  if math.abs(px - bx) < 800 and math.abs(py - by) < 60 then
-    player1.isAlive = false
   end
 end
