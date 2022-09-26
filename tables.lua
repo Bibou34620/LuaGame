@@ -4,6 +4,7 @@ player2 = {}
 scene = {}
 glove1 = {}
 glove2 = {}
+music = {}
 
 --Variables player1
 player1.x = 80
@@ -54,4 +55,7 @@ glove2.x = player1.x
 glove2.y = player1.y
 glove2.attack = false
 glove2.speed = 0.5
+
+--Variables music
+music.playSound = true
 

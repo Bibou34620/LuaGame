@@ -49,6 +49,8 @@ end
 function love.draw()
   --Dessiner les composants menu
   if scene.isOnMenu == true then
+    love.graphics.setFont(howToPlayFont)
+    love.graphics.print("<X> pour couper / activer la musique", 10)
     love.audio.play(musicMenu)
     love.graphics.scale(1.4, 1.5)
     love.graphics.draw(imageLogo, 230, -8)
@@ -158,8 +160,8 @@ function love.update(dt)
   ifPlayer1CollidesWithUpBarrier(player1.x, 0, player1.y, -20)
   ifPlayer2CollidesWithUpBarrier(player2.x, 0, player2.y, -20)
   
-  ifPlayer1CollidesWithLeftBarrier(player1.x, -20, player1.y, 10)
-  ifPlayer2CollidesWithLeftBarrier(player2.x, -20, player2.y, 10)
+  ifPlayer1CollidesWithLeftBarrier(player1.x, -20, player1.y, 0)
+  ifPlayer2CollidesWithLeftBarrier(player2.x, -20, player2.y, 0)
   
   ifPlayer1CollidesWithRightBarrier(player1.x, 760, player1.y, 0)
   ifPlayer2CollidesWithRightBarrier(player2.x, 760, player2.y, 0)
@@ -280,4 +282,21 @@ function love.keypressed(key, scancode, isRepeat)
     scene.isOnMenu = true
     scene.isOnHowToPlay = false
   end
+  
+  --Stopper / activer musique
+  if key == "v" and scene.isOnMenu == true and music.playSound == true then
+    music.playSound = false
+  end
+  
+  if key == "v" and scene.isOnMenu == true and music.playSound == false then
+    music.playSound = true
+  end
+  
+end
+
+--Checker si musique est activée ou stoppée
+if music.playSound == false then
+  love.audio.setVolume(0)
+else
+  love.audio.setVolume(1)
 end
