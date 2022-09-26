@@ -10,4 +10,5 @@ function love.conf(t)
   t.window.title = TITLE
   t.window.width = WIDTH
   t.window.height = HEIGHT
+  t.window.icon = PATH_ICON
 end

@@ -4,7 +4,7 @@
         
 ]]--
 
-TITLE = "Shooter"
+TITLE = "GrabIT !"
 WIDTH = 800
 HEIGHT = 600
-PATH_ICON = "images/icon.png" --En ajouter une plus tard
+PATH_ICON = "images/ImageMenu.png" --En ajouter une plus tard

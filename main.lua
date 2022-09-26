@@ -38,6 +38,7 @@ function love.load()
   musicMenu = love.audio.newSource("musics/menuMusic.wav", "stream")
   musicGame = love.audio.newSource("musics/gameMusic.wav", "stream")
   musicHowToPlay = love.audio.newSource("musics/howToPlayMusic.wav", "stream")
+  musicEndOfGame = love.audio.newSource("musics/endGameMusic.wav", "stream")
   
   howToPlayFont = love.graphics.newFont("fonts/Monocraft.otf")
   howToPlayLogo = love.graphics.newImage("images/ImageMenu.png")
@@ -165,6 +166,9 @@ function love.update(dt)
   
   ifPlayer1CollidesWithRightBarrier(player1.x, 760, player1.y, 0)
   ifPlayer2CollidesWithRightBarrier(player2.x, 760, player2.y, 0)
+  
+  --Vérifier si un joueur meurt
+  checkIfAPlayerDeath()
 end
 
 --Fonction pour retourner au menu
@@ -284,11 +288,11 @@ function love.keypressed(key, scancode, isRepeat)
   end
   
   --Stopper / activer musique
-  if key == "v" and scene.isOnMenu == true and music.playSound == true then
+  if key == "x" and scene.isOnMenu == true and music.playSound == true then
     music.playSound = false
   end
   
-  if key == "v" and scene.isOnMenu == true and music.playSound == false then
+  if key == "x" and scene.isOnMenu == true and music.playSound == false then
     music.playSound = true
   end
   
@@ -297,6 +301,17 @@ end
 --Checker si musique est activée ou stoppée
 if music.playSound == false then
   love.audio.setVolume(0)
-else
+end
+  
+if music.playSound == true then
   love.audio.setVolume(1)
+end
+
+function checkIfAPlayerDeath()
+  if player1.isAlive == false or player2.isAlive == false then
+    scene.isOnEndGame = true
+    scene.isOnGame = false
+    love.audio.stop(musicGame)
+    love.audio.play(musicEndOfGame)
+  end
 end
