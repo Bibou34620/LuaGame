@@ -59,6 +59,7 @@ function love.draw()
     love.graphics.draw(play, 220, 100)
     love.graphics.draw(quit, 220, 140)
     love.graphics.draw(help, 220, 180)
+    
   end
   
   --Dessiner les composants de jeu
@@ -112,7 +113,10 @@ function love.draw()
       scene.isOnMenu = true
       love.audio.stop(musicHowToPlay)
     end
+end
 
+  if scene.isOnEndGame == true then
+    love.graphics.print("Perdu !")
   end
 end
 
@@ -167,8 +171,12 @@ function love.update(dt)
   ifPlayer1CollidesWithRightBarrier(player1.x, 760, player1.y, 0)
   ifPlayer2CollidesWithRightBarrier(player2.x, 760, player2.y, 0)
   
-  --Vérifier si un joueur meurt
-  checkIfAPlayerDeath()
+  --Vérifier si joueur 1 meurt
+  checkIf1PlayerDeath()
+  
+  --Vérifier si joueur 2 meurt
+  checkIf2PlayerDeath()
+  
 end
 
 --Fonction pour retourner au menu
@@ -286,29 +294,20 @@ function love.keypressed(key, scancode, isRepeat)
     scene.isOnMenu = true
     scene.isOnHowToPlay = false
   end
+end
   
-  --Stopper / activer musique
-  if key == "x" and scene.isOnMenu == true and music.playSound == true then
-    music.playSound = false
+
+function checkIf1PlayerDeath()
+  if player1.isAlive == false then
+    scene.isOnEndGame = true
+    scene.isOnGame = false
+    love.audio.stop(musicGame)
+    love.audio.play(musicEndOfGame)
   end
-  
-  if key == "x" and scene.isOnMenu == true and music.playSound == false then
-    music.playSound = true
-  end
-  
 end
 
---Checker si musique est activée ou stoppée
-if music.playSound == false then
-  love.audio.setVolume(0)
-end
-  
-if music.playSound == true then
-  love.audio.setVolume(1)
-end
-
-function checkIfAPlayerDeath()
-  if player1.isAlive == false or player2.isAlive == false then
+function checkIf2PlayerDeath()
+  if player2.isAlive == false then
     scene.isOnEndGame = true
     scene.isOnGame = false
     love.audio.stop(musicGame)
