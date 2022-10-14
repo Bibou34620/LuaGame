@@ -18,32 +18,35 @@ function love.load()
   quit = love.graphics.newImage("images/quit.png")
   help = love.graphics.newImage("images/help.png")
   gameBG = love.graphics.newImage("images/menubg.png")
-  
+
   player1.fwd = love.graphics.newImage("images/player1/player.png")
   player1.back = love.graphics.newImage("images/player1/player_back.png")
   player1.right = love.graphics.newImage("images/player1/player_right.png")
   player1.left = love.graphics.newImage("images/player1/player_left.png")
-  
+
   player2.fwd = love.graphics.newImage("images/player2/player.png")
   player2.back = love.graphics.newImage("images/player2/player_back.png")
   player2.right = love.graphics.newImage("images/player2/player_right.png")
   player2.left = love.graphics.newImage("images/player2/player_left.png")
-  
+
   down_barrier = love.graphics.newImage("images/barrier.png")
   up_barrier = love.graphics.newImage("images/barrier.png")
   left_barrier = love.graphics.newImage("images/barrier_rotate.png")
   right_barrier = love.graphics.newImage("images/barrier_rotate.png")
-  
+
   --Audio
   musicMenu = love.audio.newSource("musics/menuMusic.wav", "stream")
   musicGame = love.audio.newSource("musics/gameMusic.wav", "stream")
   musicHowToPlay = love.audio.newSource("musics/howToPlayMusic.wav", "stream")
   musicEndOfGame = love.audio.newSource("musics/endGameMusic.wav", "stream")
-  
+
   howToPlayFont = love.graphics.newFont("fonts/Monocraft.otf")
   howToPlayLogo = love.graphics.newImage("images/ImageMenu.png")
-  
+
   logoArena = love.graphics.newImage("images/Arenaimage.png")
+  
+  player1EndWin = love.graphics.newImage("images/endGamePlayer1Wins.png")
+  player2EndWin = love.graphics.newImage("images/endGamePlayer2Wins.png")
 end
 
 --Dessiner a l'écran les composants
@@ -55,15 +58,15 @@ function love.draw()
     love.audio.play(musicMenu)
     love.graphics.scale(1.4, 1.5)
     love.graphics.draw(imageLogo, 230, -8)
-    
+
     love.graphics.draw(play, 220, 100)
     love.graphics.draw(quit, 220, 140)
     love.graphics.draw(help, 220, 180)
-    
+
   end
-  
+
   --Dessiner les composants de jeu
-  if scene.isOnGame == true then    
+  if scene.isOnGame == true then
     love.audio.play(musicGame)
     love.graphics.draw(gameBG)
     love.graphics.draw(logoArena, 330, 210)
@@ -74,7 +77,7 @@ function love.draw()
     player1Animations()
     player2Animations()
   end
-  
+
   if scene.isOnHowToPlay == true then
     love.audio.play(musicHowToPlay)
     love.graphics.scale(0.9)
@@ -82,7 +85,7 @@ function love.draw()
     love.graphics.setFont(howToPlayFont)
     love.graphics.scale(2)
     love.graphics.print("PushIT !", 190, 80)
-    
+
     love.graphics.scale(0.69)
     love.graphics.print("Joueur 1:", 60, 170)
     love.graphics.print("* Z: Aller devant", 20, 200)
@@ -91,7 +94,7 @@ function love.draw()
     love.graphics.print("* D: Aller à droite", 20, 290)
     love.graphics.print("* Espace: Attraper le joueur 2", 20, 320)
     love.graphics.print("* Espace + <Direction> pousser le J2", 20, 350)
-    
+
     love.graphics.print("Joueur 2:", 370, 170)
     love.graphics.print("* Haut: Aller devant", 360, 200)
     love.graphics.print("* Gauche: Aller à gauche", 360, 230)
@@ -99,12 +102,12 @@ function love.draw()
     love.graphics.print("* Droite: Aller à droite", 360, 290)
     love.graphics.print("* Ctrl: Attraper le joueur 2", 360, 320)
     love.graphics.print("* Ctrl + <Direction> pousser le J1", 360, 350)
-    
+
     love.graphics.print("Si vous voulez plus d'informations cliquez sur C", 140,430)
-    
+
     love.graphics.scale(0.8)
     love.graphics.print("© 2022 Mathias Rubert alias Bibou34620", 250,590)
-    
+
     love.graphics.scale(0.9)
     love.graphics.print("Echap pour retourner au menu", 30)
 
@@ -113,21 +116,25 @@ function love.draw()
       scene.isOnMenu = true
       love.audio.stop(musicHowToPlay)
     end
-end
-
-  if scene.isOnEndGame == true then
-    love.graphics.print("Perdu !")
+  end
+  
+  if scene.isOnEndGame == true and player2.isAlive == false then
+    love.graphics.draw(player1EndWin, 195, 150)
+  end
+  
+  if scene.isOnEndGame == true and player1.isAlive == false then
+    love.graphics.draw(player2EndWin, 230, 210)
   end
 end
 
 --Fonction d'update
 function love.update(dt)
-  
+
   --Quitter le jeu
   if love.keyboard.isDown("q") and scene.isOnMenu == true then
     love.event.quit()
   end
-  
+
   --Jouer
   if love.keyboard.isDown("p") then
     scene.isOnGame = true
@@ -136,7 +143,7 @@ function love.update(dt)
     scene.isOnHowToPlay = false
     love.audio.stop(musicMenu)
   end
-  
+
   --Comment jouer
   if love.keyboard.isDown("h") then
     scene.isOnGame = false
@@ -145,9 +152,9 @@ function love.update(dt)
     scene.isOnHowToPlay = true
     love.audio.stop(musicMenu)
   end
-  
+
   --Fonctions
-  
+
   --Retourner au menu
   returnToMenu()
   --Pour que player1 se déplace
@@ -156,27 +163,27 @@ function love.update(dt)
   player2Movement()
   --Si le joueur 2 est frappé [EXPERIMENTAL]
   checkIfPlayer2Frapped()
-  
+
   checkIfPlayer1Frapped()
-  
+
   ifPlayer1CollidesWithDownBarrier(player1.x, 0, player1.y, 560)
   ifPlayer2CollidesWithDownBarrier(player2.x, 0, player2.y, 560)
-  
+
   ifPlayer1CollidesWithUpBarrier(player1.x, 0, player1.y, -20)
   ifPlayer2CollidesWithUpBarrier(player2.x, 0, player2.y, -20)
-  
+
   ifPlayer1CollidesWithLeftBarrier(player1.x, -20, player1.y, 0)
   ifPlayer2CollidesWithLeftBarrier(player2.x, -20, player2.y, 0)
-  
+
   ifPlayer1CollidesWithRightBarrier(player1.x, 760, player1.y, 0)
   ifPlayer2CollidesWithRightBarrier(player2.x, 760, player2.y, 0)
-  
+
   --Vérifier si joueur 1 meurt
   checkIf1PlayerDeath()
-  
+
   --Vérifier si joueur 2 meurt
   checkIf2PlayerDeath()
-  
+
 end
 
 --Fonction pour retourner au menu
@@ -211,28 +218,28 @@ end
 function checkIfPlayer2Frapped()
   if gloveCollisionWithPlayer2(player1.x, player1.y, player2.x, player2.y) == true and glove1.attack == true then
     print("Joueur attaqué !")
-    
+
     if player1.isOnLeft == true then
       player2.x = player2.x - 6
       player2.speed = 1
     end
-    
+
     if player1.isOnRight == true then
-      player2.x = player2.x + 6 
+      player2.x = player2.x + 6
       player2.speed = 1
     end
-    
+
     if player1.isOnBack == true then
       player2.y = player2.y - 6
       player2.speed = 1
     end
-    
+
     if player1.isOnFwd == true then
       player2.y = player2.y + 6
       player2.speed = 1
     end
-    
-    
+
+
   else
     player2.speed = 5
   end
@@ -243,29 +250,29 @@ end
 function checkIfPlayer1Frapped()
   if gloveCollisionWithPlayer1(player2.x, player2.y, player1.x, player1.y) == true and glove2.attack == true then
     print("Joueur attaqué !")
-    
+
     if player2.isOnLeft == true then
-      player1.x = player1.x - 6 
+      player1.x = player1.x - 6
       player1.speed = 1
     end
-    
+
     if player2.isOnRight == true then
       player1.x = player1.x + 6
       player1.speed = 1
     end
-    
+
     if player2.isOnBack == true then
       player1.y = player1.y - 6
       player1.speed = 1
     end
-    
+
     if player2.isOnFwd == true then
       player1.y = player1.y + 6
       player1.speed = 1
     end
-    
-    
-  
+
+
+
   else
     player1.speed = 5
   end
@@ -276,18 +283,18 @@ function love.keypressed(key, scancode, isRepeat)
   isRepeat = false
   if key == "space" then
     glove1.attack = true
-    
-  else 
+
+  else
     glove1.attack = false
   end
-  
+
   if key == "rshift" then
     glove2.attack = true
-    
+
   else
     glove2.attack = false
   end
-  
+
   --Ouvrir documentation
   if key == "c" and scene.isOnHowToPlay == true then
     love.system.openURL("https:/github.com/bibou34620/LuaGame")
@@ -295,7 +302,7 @@ function love.keypressed(key, scancode, isRepeat)
     scene.isOnHowToPlay = false
   end
 end
-  
+
 
 function checkIf1PlayerDeath()
   if player1.isAlive == false then
