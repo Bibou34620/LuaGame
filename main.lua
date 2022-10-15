@@ -53,8 +53,6 @@ end
 function love.draw()
   --Dessiner les composants menu
   if scene.isOnMenu == true then
-    love.graphics.setFont(howToPlayFont)
-    love.graphics.print("<X> pour couper / activer la musique", 10)
     love.audio.play(musicMenu)
     love.graphics.scale(1.4, 1.5)
     love.graphics.draw(imageLogo, 230, -8)
